@@ -1,0 +1,56 @@
+{
+	"$id": "https://github/KevinDackow/CPDB-API/request_schema.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"description": "A request for CPDB climate policy data",
+	"properties": {
+		"country": {
+			"description": "The country’s ISO Alpha-3 code (ISO 3166 standard). See https://www.iban.com/country-codes",
+			"type": "string"
+		},
+		"decisionDate": {
+			"description": "YYYY - the year to query for data. If not provided will return all years’ data.",
+			"type": "string"
+		},
+		"mitigationArea": {
+			"description": "The mitigation areas to query. Items must be one of: energy-efficiency, energy-service-demand-reduction-and-resource-efficiency, non-energy-use, other-low-carbon-technologies-and-fuel-switch, renewables, unknown",
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"minItems": 1,
+			"uniqueItems": true
+		},
+		"policyInstrument": {
+			"description": "a list of policy instruments to query for. Case insensitive. Each provided policy instrument must be from the section of the same name on https://climatepolicydatabase.org/policies. They should be formatted with hyphens instead of spaces. Some examples: grid-access-and-priority-for-renewables or strategic-planning. Note that for policy instruments that are grouped on the website, e.g. performance-label, providing the group name will query all contained groups.",
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"minItems": 1,
+			"uniqueItems": true
+		},
+		"responseType": {
+			"description": "The reply type, case-insensitive. Must be either JSON or CSV. Defaults to CSV.",
+			"type": "string"
+		},
+		"sector": {
+			"description": "a list of sectors to query for. Case insensitive. Each provided sector must be one of the sectors from the section of the same name on https://climatepolicydatabase.org/policies. They should be formatted by hyphens. Some examples: agriculture-and-forestry or CCS. Note that for sectors that are grouped on the website, e.g. agriculture-and-forestry, providing the group name will query all contained groups.",
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"minItems": 1,
+			"uniqueItems": true
+		},
+		"status": {
+			"description": "The policy statuses to query. Each item must be one of (case-insensitive): Draft, Ended, In force, Planned, Superseded, Under review, Unknown",
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"minItems": 1,
+			"uniqueItems": true
+		}
+	},
+	"title": "Climate Policy Database Request"
+}
