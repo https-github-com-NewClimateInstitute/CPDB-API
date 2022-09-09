@@ -2,6 +2,7 @@ import json
 
 import pandas as pd
 import requests
+from requests.auth import HTTPBasicAuth
 
 API_URL = 'cpdb-dev.waat.eu/api/v1/climate-policies'
 
@@ -15,6 +16,8 @@ class Request:
     def __init__(self, api_url=API_URL):
         self._api_url = api_url
         self._request = ""
+        self._api_user = ""
+        self._api_password = ""
         self._country = ""
         self._decision_date = ""
         self._status = ""
@@ -31,6 +34,22 @@ class Request:
         :return: none
         """
         self._request = r
+
+    def set_api_user(self, u):
+        """
+        Sets the API username for the request.
+        :param u: the username to be used for authenticating to the API
+        :return: none
+        """
+        self._api_user = u
+
+    def set_api_password(self, p):
+        """
+        Sets the API password for the request.
+        :param p: the password to be used for authenticating to the API
+        :return: none
+        """
+        self._api_password = p
 
     def set_country(self, c):
         """
@@ -100,15 +119,14 @@ class Request:
     def issue(self):
         """
         Validates and issues this request against the API.
-        :return: the response from the server
+        :return: the response from the server in a Pandas dataframe.
         """
-        self.validate()
         req = self.marshal()
-        resp = requests.get(self._api_url, params={"request": req})
+        resp = requests.get(self._api_url, auth=HTTPBasicAuth(self._api_user, self._api_password), params = req)
         resp.raise_for_status()  # raise any produced error
         self._response = resp.json()
         self._data_frame = pd.DataFrame.from_dict(self._response)
-        return resp
+        return self._data_frame
 
     # For saving data in different formats
     def save_json(self, path):
@@ -137,23 +155,17 @@ class Request:
         """
         if self._request != "":
             return
-        out = dict()
-        out["$schema"] = "https://json-schema.org/draft/2020-12/schema"
-        out["$id"] = SCHEMA_PATH
-        out["title"] = "Climate Policy Database Request"
-        out["description"] = "A request intended for NCI's Climate Policy Database"
         properties = dict()
         if self._country != "":
-            properties["country"] = self._country
+            properties["country_iso"] = self._country
         if self._decision_date != "":
             properties["decision_date"] = self._decision_date
         if self._status != "":
             properties["status"] = self._status
-        if not self._sectors.empty():
+        if self._sectors != []:
             properties["sectors"] = json.dumps(self._sectors)
-        if not self._policy_instruments.empty():
+        if self._policy_instruments != []:
             properties["policy_instruments"] = json.dumps(self._policy_instruments)
-        if not self._mitigation_areas.empty():
+        if self._mitigation_areas != []:
             properties["mitigation_areas"] = json.dumps(self._mitigation_areas)
-        out["properties"] = json.dumps(properties)
-        return json.dumps(out)
+        return properties
