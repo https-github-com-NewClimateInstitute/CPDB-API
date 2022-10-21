@@ -22,10 +22,11 @@ class Request:
         self._decision_date = ""
         self._status = ""
         self._response = ""
-        self._sectors = list()
-        self._policy_instruments = list()
-        self._mitigation_areas = list()
+        self._sectors = ""
+        self._policy_instruments = ""
+        self._mitigation_areas = ""
         self._data_frame = ""
+        self._properties = dict()
 
     # Pre-formatted requests
     def set_request(self, r):
@@ -80,46 +81,48 @@ class Request:
     def add_sectors(self, sectors):
         """
         Adds sectors to query (Case insensitive). Each provided sector must be one of the sectors from the section of
-        the same name on https://climatepolicydatabase.org/policies. They should be formatted by hyphens.
-        Some examples: agriculture-and-forestry or CCS.
+        the same name on https://climatepolicydatabase.org/policies.
+        Some examples: agriculture and forestry or CCS.
 
         :param sectors: a list of sectors to add to the query.
         :return: none
         """
-        for s in sectors:
-            self._sectors.append(s)
+        self._sectors = ",".join(sectors)
 
     def add_policy_instruments(self, policy_instruments):
         """
         Adds policy instruments to the list of policy instruments to query for. Case insensitive. Each provided policy
-        instrument must be from the section of the same name on https://climatepolicydatabase.org/policies. They should
-        be formatted with hyphens instead of spaces. Some examples: grid-access-and-priority-for-renewables or
-        strategic-planning. Note that for policy instruments that are grouped on the website,
-        e.g. performance-label, the server will treat it as a query for all contained groups.
+        instrument must be from the section of the same name on https://climatepolicydatabase.org/policies.
+        Some examples: grid access and priority for renewables or
+        strategic planning. Note that for policy instruments that are grouped on the website,
+        e.g. performance label, the server will treat it as a query for all contained groups.
 
         :param policy_instruments: a list of policy instruments to add to the query.
         :return: none
         """
-        for p in policy_instruments:
-            self._policy_instruments.append(p)
+        self._policy_instruments = ",".join(policy_instruments)
 
     def add_mitigation_areas(self, mitigation_areas):
         """
-        The mitigation areas to query. Items must be one of:energy-efficiency,
-        energy-service-demand-reduction-and-resource-efficiency, non-energy-use,
-        other-low-carbon-technologies-and-fuel-switch, renewables, unknown
+        A list of mitigation areas to query. Items must be one of:energy efficiency,
+        energy service demand reduction and resource efficiency, non energy use,
+        other low carbon technologies and fuel switch, renewables, unknown
 
         :param mitigation_areas: a list of mitigation areas to add to the query.
         :return: none
         """
-        for m in mitigation_areas:
-            self._mitigation_areas.append(m)
+        self._mitigation_areas = ",".join(mitigation_areas)
 
     # For request issuing & data retrieval.
     def issue(self):
         """
+<<<<<<< HEAD
         Validates and issues this request against the API.
         :return: the response from the server in a Pandas dataframe.
+=======
+        Issues this request against the API.
+        :return: the response from the server
+>>>>>>> Add some unittests & modify separators for request lists.
         """
         req = self.marshal()
         resp = requests.get(self._api_url, auth=HTTPBasicAuth(self._api_user, self._api_password), params = req)
@@ -155,6 +158,9 @@ class Request:
         """
         if self._request != "":
             return
+        out = dict()
+        out["title"] = "Climate Policy Database Request"
+        out["description"] = "A request intended for NCI's Climate Policy Database"
         properties = dict()
         if self._country != "":
             properties["country_iso"] = self._country
@@ -162,10 +168,12 @@ class Request:
             properties["decision_date"] = self._decision_date
         if self._status != "":
             properties["status"] = self._status
-        if self._sectors != []:
-            properties["sectors"] = json.dumps(self._sectors)
-        if self._policy_instruments != []:
-            properties["policy_instruments"] = json.dumps(self._policy_instruments)
-        if self._mitigation_areas != []:
-            properties["mitigation_areas"] = json.dumps(self._mitigation_areas)
-        return properties
+        if self._sectors != "":
+            properties["sectors"] = self._sectors
+        if self._policy_instruments != "":
+            properties["policy_instruments"] = self._policy_instruments
+        if self._mitigation_areas != "":
+            properties["mitigation_areas"] = self._mitigation_areas
+        out["properties"] = json.dumps(properties)
+        self._properties = properties
+        return json.dumps(out)
