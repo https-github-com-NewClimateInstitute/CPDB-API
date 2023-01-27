@@ -174,7 +174,6 @@ def main():
     """
     Example code on how to use the client library.
     """
-    print("Hello")
     r = Request()
     r.set_api_user("user")
     r.set_api_password("WaatUser")
