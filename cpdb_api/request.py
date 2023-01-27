@@ -1,11 +1,12 @@
-import json
+"""A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB).
+"""
 
-import pandas as pd
+import json
 import requests
+import pandas as pd
 from requests.auth import HTTPBasicAuth
 
-API_URL = 'cpdb-dev.waat.eu/api/v1/climate-policies'
-
+API_URL = 'http://cpdb-dev.waat.eu/api/v1/climate-policies'
 
 class Request:
     """
@@ -116,16 +117,11 @@ class Request:
     # For request issuing & data retrieval.
     def issue(self):
         """
-<<<<<<< HEAD
-        Validates and issues this request against the API.
-        :return: the response from the server in a Pandas dataframe.
-=======
         Issues this request against the API.
         :return: the response from the server
->>>>>>> Add some unittests & modify separators for request lists.
         """
         req = self.marshal()
-        resp = requests.get(self._api_url, auth=HTTPBasicAuth(self._api_user, self._api_password), params = req)
+        resp = requests.get(self._api_url, auth=HTTPBasicAuth(self._api_user, self._api_password), params = req, timeout=300)
         resp.raise_for_status()  # raise any produced error
         self._response = resp.json()
         self._data_frame = pd.DataFrame.from_dict(self._response)
@@ -135,11 +131,11 @@ class Request:
     def save_json(self, path):
         """
         :param path: the file to save the data to. The file type will be dependent on the value of
-        self._response_type
+        self._response type
         :return: none
         """
-        with open(path, 'w') as f:
-            json.dump(self.response, f)
+        with open(path, 'w', encoding="utf-8") as f:
+            json.dump(self._response, f)
 
     def save_csv(self, path):
         """ 
@@ -158,9 +154,6 @@ class Request:
         """
         if self._request != "":
             return
-        out = dict()
-        out["title"] = "Climate Policy Database Request"
-        out["description"] = "A request intended for NCI's Climate Policy Database"
         properties = dict()
         if self._country != "":
             properties["country_iso"] = self._country
@@ -174,6 +167,22 @@ class Request:
             properties["policy_instruments"] = self._policy_instruments
         if self._mitigation_areas != "":
             properties["mitigation_areas"] = self._mitigation_areas
-        out["properties"] = json.dumps(properties)
         self._properties = properties
-        return json.dumps(out)
+        return properties
+
+def main():
+    """
+    Example code on how to use the client library.
+    """
+    print("Hello")
+    r = Request()
+    r.set_api_user("user")
+    r.set_api_password("WaatUser")
+    r.set_country("IND")
+    r.set_decision_date(2018)
+    r.issue()
+    r.save_json("test_json.txt")
+
+
+if __name__ == "__main__":
+    main()
