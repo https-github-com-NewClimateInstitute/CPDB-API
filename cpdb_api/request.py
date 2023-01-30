@@ -169,19 +169,3 @@ class Request:
             properties["mitigation_areas"] = self._mitigation_areas
         self._properties = properties
         return properties
-
-def main():
-    """
-    Example code on how to use the client library.
-    """
-    r = Request()
-    r.set_api_user("user")
-    r.set_api_password("WaatUser")
-    r.set_country("IND")
-    r.set_decision_date(2018)
-    r.issue()
-    r.save_json("test_json.txt")
-
-
-if __name__ == "__main__":
-    main()
