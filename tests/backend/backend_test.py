@@ -1,6 +1,7 @@
 import unittest
 import requests
 import pandas as pd
+import os
 
 class CPDBBackendTest(unittest.TestCase):
 
@@ -20,9 +21,9 @@ class CPDBBackendTest(unittest.TestCase):
     return CPDBBackendTest.groud_truth
 
   def readAPI(self, params = dict()):
-    API_URL = 'http://cpdb-dev.waat.eu/api/v1/climate-policies'
-    user_name = 'user'
-    password = 'WaatUser'
+    API_URL = os.getenv("API_URL")
+    user_name = os.getenv("API_USER")
+    password = os.getenv("API_PASSWORD")
     response = requests.get(API_URL, auth=(user_name, password), params=params)
     return pd.read_json(response.content)
 
