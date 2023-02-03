@@ -66,28 +66,28 @@ class CPDBBackendTest(unittest.TestCase):
     actual = self.readAPI(dict(policy_instrument = ",".join(policyInstrument))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testSingleMitigationArea_returnsSameNumberOfRows(self):
+  def testSinglePolicyType_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     policy_type = "Energy efficiency"
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_type"]].str.contains(policy_type)]
     actual = self.readAPI(dict(policy_type = [policy_type]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testMultipleMitigationArea_returnsSameNumberOfRows(self):
+  def testMultiplePolicyType_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     policy_type = ["Energy efficiency", "Renewables"]
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_type"]].str.contains('|'.join(policy_type)) == True]
     actual = self.readAPI(dict(policy_type = ",".join(policy_type))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testSingleStatus_returnsSameNumberOfRows(self):
+  def testSingleImplementState_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     implement_state = "In force"
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["implement_state"]].str.contains(implement_state)]
     actual = self.readAPI(dict(implement_state = [implement_state]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testMultipleStatus_returnsSameNumberOfRows(self):
+  def testMultipleImplementState_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     implement_state = ["In force", "Planned"]
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["implement_state"]].str.contains('|'.join(implement_state)) == True]
