@@ -7,7 +7,7 @@ setuptools.setup(
     name="cpdb-api-dackow",
     version="0.0.1",
     author="Kevin Dackow",
-    author_email="kevindackow@gmail.com",
+    author_email="kjdackow@gmail.com",
     description="A library to query the Climate Policy Database",
     url="https://github.com/KevinDackow/CPDB-API",
     packages=setuptools.find_packages(),
