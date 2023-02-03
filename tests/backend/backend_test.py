@@ -1,6 +1,7 @@
 import unittest
 import requests
 import pandas as pd
+import os
 
 class CPDBBackendTest(unittest.TestCase):
 
@@ -20,9 +21,9 @@ class CPDBBackendTest(unittest.TestCase):
     return CPDBBackendTest.groud_truth
 
   def readAPI(self, params = dict()):
-    API_URL = 'http://cpdb-dev.waat.eu/api/v1/climate-policies'
-    user_name = 'user'
-    password = 'WaatUser'
+    API_URL = os.getenv("API_URL")
+    user_name = os.getenv("API_USER")
+    password = os.getenv("API_PASSWORD")
     response = requests.get(API_URL, auth=(user_name, password), params=params)
     return pd.read_json(response.content)
 
@@ -65,28 +66,28 @@ class CPDBBackendTest(unittest.TestCase):
     actual = self.readAPI(dict(policy_instrument = ",".join(policyInstrument))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testSingleMitigationArea_returnsSameNumberOfRows(self):
+  def testSinglePolicyType_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     policy_type = "Energy efficiency"
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_type"]].str.contains(policy_type)]
     actual = self.readAPI(dict(policy_type = [policy_type]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testMultipleMitigationArea_returnsSameNumberOfRows(self):
+  def testMultiplePolicyType_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     policy_type = ["Energy efficiency", "Renewables"]
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_type"]].str.contains('|'.join(policy_type)) == True]
     actual = self.readAPI(dict(policy_type = ",".join(policy_type))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testSingleStatus_returnsSameNumberOfRows(self):
+  def testSingleImplementState_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     implement_state = "In force"
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["implement_state"]].str.contains(implement_state)]
     actual = self.readAPI(dict(implement_state = [implement_state]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testMultipleStatus_returnsSameNumberOfRows(self):
+  def testMultipleImplementState_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
     implement_state = ["In force", "Planned"]
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["implement_state"]].str.contains('|'.join(implement_state)) == True]
