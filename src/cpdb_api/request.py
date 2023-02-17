@@ -74,7 +74,7 @@ class Request:
         (case-insensitive):
         { Draft, Ended, In force, Planned, Superseded, Under review, Unknown }
 
-        :param policy_status:
+        :param s:
         :return: none
         """
         self._policy_status = s.lower()
