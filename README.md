@@ -1,2 +1,1 @@
-# CPDB-API
-A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB)
+An API for the NewClimate Institute's Climate Policy Database.

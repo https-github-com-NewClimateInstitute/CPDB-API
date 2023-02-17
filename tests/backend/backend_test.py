@@ -1,6 +1,7 @@
 import unittest
 import requests
 import pandas as pd
+import os
 
 class CPDBBackendTest(unittest.TestCase):
 
@@ -9,8 +10,8 @@ class CPDBBackendTest(unittest.TestCase):
       "country_iso": 'Country ISO',
       "sector": 'Sector name',
       "policy_instrument": 'Type of policy instrument',
-      "mitigation_area": "Policy type",
-      "status": "Implementation state",
+      "policy_type": "Policy type",
+      "implement_state": "Implementation state",
       "decision_date": "Date of decision"
   }
 
@@ -20,9 +21,9 @@ class CPDBBackendTest(unittest.TestCase):
     return CPDBBackendTest.groud_truth
 
   def readAPI(self, params = dict()):
-    API_URL = 'http://cpdb-dev.waat.eu/api/v1/climate-policies'
-    user_name = 'user'
-    password = 'WaatUser'
+    API_URL = os.getenv("API_URL")
+    user_name = os.getenv("API_USER")
+    password = os.getenv("API_PASSWORD")
     response = requests.get(API_URL, auth=(user_name, password), params=params)
     return pd.read_json(response.content)
 
@@ -41,56 +42,56 @@ class CPDBBackendTest(unittest.TestCase):
     cpdb = self.readCPDB()
     sectorName = "General"
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["sector"]].str.contains(sectorName)]
-    actual = self.readAPI(dict(sectors = [sectorName]))
+    actual = self.readAPI(dict(sector = [sectorName]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
   def testPolicyMultipleSectors_returnSameNumberOfRows(self):
     cpdb = self.readCPDB()
     sectorNames = ["General", "Electricity and heat"]
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["sector"]].str.contains('|'.join(sectorNames)) == True]
-    actual = self.readAPI(dict(sectors = ",".join(sectorNames))).drop_duplicates()
+    actual = self.readAPI(dict(sector = ",".join(sectorNames))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
   def testSinglePolicyInstrument_returnSameNumberOfRows(self):
     cpdb = self.readCPDB()
     policyInstrument = "Direct investment"
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_instrument"]].str.contains(policyInstrument)]
-    actual = self.readAPI(dict(policy_instruments = [policyInstrument]))
+    actual = self.readAPI(dict(policy_instrument = [policyInstrument]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
   def testMultiplePolicyInstrument_returnSameNumberOfRows(self):
     cpdb = self.readCPDB()
     policyInstrument = ["Fiscal or financial incentives", "Institutional creation"]
     filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_instrument"]].str.contains('|'.join(policyInstrument)) == True]
-    actual = self.readAPI(dict(policy_instruments = ",".join(policyInstrument))).drop_duplicates()
+    actual = self.readAPI(dict(policy_instrument = ",".join(policyInstrument))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testSingleMitigationArea_returnsSameNumberOfRows(self):
+  def testSinglePolicyType_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
-    mitigation_area = "Energy efficiency"
-    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["mitigation_area"]].str.contains(mitigation_area)]
-    actual = self.readAPI(dict(mitigation_areas = [mitigation_area]))
+    policy_type = "Energy efficiency"
+    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_type"]].str.contains(policy_type)]
+    actual = self.readAPI(dict(policy_type = [policy_type]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testMultipleMitigationArea_returnsSameNumberOfRows(self):
+  def testMultiplePolicyType_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
-    mitigation_area = ["Energy efficiency", "Renewables"]
-    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["mitigation_area"]].str.contains('|'.join(mitigation_area)) == True]
-    actual = self.readAPI(dict(mitigation_areas = ",".join(mitigation_area))).drop_duplicates()
+    policy_type = ["Energy efficiency", "Renewables"]
+    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_type"]].str.contains('|'.join(policy_type)) == True]
+    actual = self.readAPI(dict(policy_type = ",".join(policy_type))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testSingleStatus_returnsSameNumberOfRows(self):
+  def testSingleImplementState_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
-    status = "In force"
-    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["status"]].str.contains(status)]
-    actual = self.readAPI(dict(status = [status]))
+    implement_state = "In force"
+    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["implement_state"]].str.contains(implement_state)]
+    actual = self.readAPI(dict(implement_state = [implement_state]))
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
-  def testMultipleStatus_returnsSameNumberOfRows(self):
+  def testMultipleImplementState_returnsSameNumberOfRows(self):
     cpdb = self.readCPDB()
-    status = ["In force", "Planned"]
-    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["status"]].str.contains('|'.join(status)) == True]
-    actual = self.readAPI(dict(status = ",".join(status))).drop_duplicates()
+    implement_state = ["In force", "Planned"]
+    filteredGroundTruth = cpdb[cpdb[CPDBBackendTest.groundTruthColNames["implement_state"]].str.contains('|'.join(implement_state)) == True]
+    actual = self.readAPI(dict(implement_state = ",".join(implement_state))).drop_duplicates()
     self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
   def testSingleDecisionDate_returnsSameNumberOfRows(self):
@@ -110,22 +111,22 @@ class CPDBBackendTest(unittest.TestCase):
     self.assertEqual(actual.shape[0], filteredGroundTruth_2010.shape[0], "incorrect record number")
 
   def testMixedFilters_returnsSameNumberOfRows(self):
-    pass
-    # cpdb = self.readCPDB()
-    # country_iso = "IND"
-    # sectorName = "General"
-    # policyInstrument = "Direct investment"
-    # mitigation_area = "Energy efficiency"
-    # status = "In force"
-    # decision_date = 2010
-    # criteria = (cpdb[CPDBBackendTest.groundTruthColNames["country_iso"]] == country_iso) & \
-    #            (cpdb[cpdb[CPDBBackendTest.groundTruthColNames["sector"]].str.contains(sectorName)]) & \
-    #            (cpdb[cpdb[CPDBBackendTest.groundTruthColNames["policy_instrument"]].str.contains(policyInstrument)]) & \
-    #            (cpdb[cpdb[CPDBBackendTest.groundTruthColNames["mitigation_area"]].str.contains(mitigation_area)]) & \
-    #            (cpdb[CPDBBackendTest.groundTruthColNames["status"]].str.contains(status)) & \
-    #            (cpdb[CPDBBackendTest.groundTruthColNames["decision_date"]] == decision_date)
-    # filteredGroundTruth = cpdb[criteria]
-    # actual = self.readAPI(dict(country_iso = country_iso, sector = sectorName, policyInstrument))
+    cpdb = self.readCPDB()
+    country_iso = "IND"
+    sector_name = "General"
+    policy_instrument = "Direct investment"
+    policy_type = "Energy efficiency"
+    implement_state = "In force"
+    decision_date = 2010
+    criteria = (cpdb[CPDBBackendTest.groundTruthColNames["country_iso"]] == country_iso) & \
+               (cpdb[CPDBBackendTest.groundTruthColNames["sector"]].str.contains(sector_name)) & \
+               (cpdb[CPDBBackendTest.groundTruthColNames["policy_instrument"]].str.contains(policy_instrument)) & \
+               (cpdb[CPDBBackendTest.groundTruthColNames["policy_type"]].str.contains(policy_type)) & \
+               (cpdb[CPDBBackendTest.groundTruthColNames["implement_state"]].str.contains(implement_state)) & \
+               (cpdb[CPDBBackendTest.groundTruthColNames["decision_date"]] == decision_date)
+    filteredGroundTruth = cpdb[criteria]
+    actual = self.readAPI(dict(country_iso = country_iso, sector = sector_name, policy_instrument = policy_instrument, policy_type=policy_type, implement_state = implement_state, decision_date=decision_date))
+    self.assertEqual(actual.shape[0], filteredGroundTruth.shape[0], "incorrect record number")
 
 
 
