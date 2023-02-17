@@ -1,12 +1,11 @@
-"""A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB).
-"""
-
 import json
-import requests
+
 import pandas as pd
+import requests
 from requests.auth import HTTPBasicAuth
 
 API_URL = 'http://cpdb-dev.waat.eu/api/v1/climate-policies'
+
 
 class Request:
     """
@@ -21,11 +20,11 @@ class Request:
         self._api_password = ""
         self._country = ""
         self._decision_date = ""
-        self._status = ""
+        self._policy_status = ""
         self._response = ""
-        self._sectors = ""
-        self._policy_instruments = ""
-        self._mitigation_areas = ""
+        self._sector = ""
+        self._policy_instrument = ""
+        self._policy_type = ""
         self._data_frame = ""
         self._properties = dict()
 
@@ -69,28 +68,29 @@ class Request:
         """
         self._decision_date = d
 
-    def set_status(self, s):
+    def set_policy_status(self, s):
         """
-        Sets the status of the request. Should be one of (case-insensitive):
+        Sets the policy status (implemention state) for the request. Should be one of
+        (case-insensitive):
         { Draft, Ended, In force, Planned, Superseded, Under review, Unknown }
 
         :param s:
-        :return:
+        :return: none
         """
-        self._status = s.lower()
+        self._policy_status = s.lower()
 
-    def add_sectors(self, sectors):
+    def add_sector(self, sector):
         """
         Adds sectors to query (Case insensitive). Each provided sector must be one of the sectors from the section of
         the same name on https://climatepolicydatabase.org/policies.
         Some examples: agriculture and forestry or CCS.
 
-        :param sectors: a list of sectors to add to the query.
+        :param sector: a list of sectors to add to the query.
         :return: none
         """
-        self._sectors = ",".join(sectors)
+        self._sector = ",".join(sector)
 
-    def add_policy_instruments(self, policy_instruments):
+    def add_policy_instrument(self, policy_instrument):
         """
         Adds policy instruments to the list of policy instruments to query for. Case insensitive. Each provided policy
         instrument must be from the section of the same name on https://climatepolicydatabase.org/policies.
@@ -98,21 +98,21 @@ class Request:
         strategic planning. Note that for policy instruments that are grouped on the website,
         e.g. performance label, the server will treat it as a query for all contained groups.
 
-        :param policy_instruments: a list of policy instruments to add to the query.
+        :param policy_instrument: a list of policy instruments to add to the query.
         :return: none
         """
-        self._policy_instruments = ",".join(policy_instruments)
+        self._policy_instrument = ",".join(policy_instrument)
 
-    def add_mitigation_areas(self, mitigation_areas):
+    def add_policy_type(self, policy_type):
         """
-        A list of mitigation areas to query. Items must be one of:energy efficiency,
-        energy service demand reduction and resource efficiency, non energy use,
-        other low carbon technologies and fuel switch, renewables, unknown
+        A list of policy types (mitigation areas) to query. Items must be one of:
+        energy efficiency, energy service demand reduction and resource efficiency, 
+        non energy use, other low carbon technologies and fuel switch, renewables, unknown
 
-        :param mitigation_areas: a list of mitigation areas to add to the query.
+        :param policy_type: a list of policy types to add to the query.
         :return: none
         """
-        self._mitigation_areas = ",".join(mitigation_areas)
+        self._policy_type = ",".join(policy_type)
 
     # For request issuing & data retrieval.
     def issue(self):
@@ -121,7 +121,7 @@ class Request:
         :return: the response from the server
         """
         req = self.marshal()
-        resp = requests.get(self._api_url, auth=HTTPBasicAuth(self._api_user, self._api_password), params = req, timeout=300)
+        resp = requests.get(self._api_url, auth=HTTPBasicAuth(self._api_user, self._api_password), params = req)
         resp.raise_for_status()  # raise any produced error
         self._response = resp.json()
         self._data_frame = pd.DataFrame.from_dict(self._response)
@@ -159,13 +159,13 @@ class Request:
             properties["country_iso"] = self._country
         if self._decision_date != "":
             properties["decision_date"] = self._decision_date
-        if self._status != "":
-            properties["status"] = self._status
-        if self._sectors != "":
-            properties["sectors"] = self._sectors
-        if self._policy_instruments != "":
-            properties["policy_instruments"] = self._policy_instruments
-        if self._mitigation_areas != "":
-            properties["mitigation_areas"] = self._mitigation_areas
+        if self._policy_status != "":
+            properties["policy_status"] = self._policy_status
+        if self._sector != "":
+            properties["sector"] = self._sector
+        if self._policy_instrument != "":
+            properties["policy_instrument"] = self._policy_instrument
+        if self._policy_type != "":
+            properties["policy_type"] = self._policy_type
         self._properties = properties
         return properties
