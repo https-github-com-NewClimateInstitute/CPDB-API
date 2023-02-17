@@ -1,3 +1,41 @@
+"""A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB).
+Installation
+
+```
+pip install ...
+```
+
+Example
+```
+import Request from ...
+import pandas as pd
+
+# for query to dev server
+request = Request()
+request.set_api_user(...)
+request.set_api_password(...)
+
+# for query to prod server
+# request = Resquest("https://climatepolicydatabase.org/api/v1/climate-policies")
+
+# set filters
+request.set_country("IND")
+request.set_decision_date(2010)
+request.set_status("Planned")
+request.add_sectors("Electricity and heat")
+request.add_sectors("General")
+request.add_policy_instruments("Direct investment")
+request.add_policy_instruments("Energy efficiency")
+request.add_policy_type("Energy efficiency")
+
+# obtain filtered result as pandas Dataframe
+df = request.issue()
+
+# save the result to CSV file
+request.save_csv("filtered_cpdb.csv")
+```
+"""
+
 import json
 
 import pandas as pd
