@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cpdb_api"
+version = "0.0.1"
+authors = [
+  { name="Kevin Dackow", email="kjdackow@gmail.com" },
+]
+description = "TESTING 123"
+dependencies = [
+  "pandas",
+  "requests"
+]
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+keywords = ["nci", "cpdb", "climatepolicydatabase", "newclimateinstitute"]
+
+[project.urls]
+"Homepage" = "https://github.com/KevinDackow/CDPB-API"
+
+[tool.bumpver]
+current_version = "2023.1001-alpha"
+version_pattern = "YYYY.BUILD[-TAG]"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
+"README.md" = [
+    "{version}",
+    "{pep440_version}",
+]
+
