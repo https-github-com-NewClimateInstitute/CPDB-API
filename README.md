@@ -1,4 +1,4 @@
-A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB). You can view the database via the database itself at https://climatepolicydatabase.org/.
+A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB). You can also view the database via the website at https://climatepolicydatabase.org/.
 
 # Installation
 
