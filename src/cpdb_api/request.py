@@ -21,11 +21,11 @@ request.set_api_password(...)
 # set filters
 request.set_country("IND")
 request.set_decision_date(2010)
-request.set_status("Planned")
-request.add_sectors("Electricity and heat")
-request.add_sectors("General")
-request.add_policy_instruments("Direct investment")
-request.add_policy_instruments("Energy efficiency")
+request.set_policy_status("Planned")
+request.add_sector("Electricity and heat")
+request.add_sector("General")
+request.add_policy_instrument("Direct investment")
+request.add_policy_instrument("Energy efficiency")
 request.add_policy_type("Energy efficiency")
 
 # obtain filtered result as pandas Dataframe
