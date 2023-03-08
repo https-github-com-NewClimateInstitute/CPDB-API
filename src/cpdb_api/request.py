@@ -181,7 +181,7 @@ class Request:
         self._response_type
         :return: none
         """
-        if self._data_frame = '':
+        if self._data_frame == '':
           print("No dataframe set, unable to export to CSV")
           return
         self._data_frame.to_csv(path)
