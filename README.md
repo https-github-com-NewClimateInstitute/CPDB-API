@@ -21,7 +21,7 @@ from cpdb_api import request
 r = request.Request()
 
 # auth
-r.set_api_username("<username>")
+r.set_api_user("<username>")
 r.set_api_password("<password>")
 
 # set filters
