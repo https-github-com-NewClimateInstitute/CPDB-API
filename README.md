@@ -8,6 +8,11 @@ Installation is simple, via pip.
 pip install -i https://test.pypi.org/simple/ cpdb-api
 ```
 
+If you need to specify a version, please do something like this:
+```
+pip install -i https://test.pypi.org/simple/ cpdb-api==<version e.g. 1.0.5>
+```
+
 # Usage
 
 ```
@@ -34,4 +39,14 @@ r.issue()
 
 # save the result to CSV file
 r.save_csv("filtered_cpdb.csv")
+```
+
+# Releasing
+To release to the test PyPI, do the following:
+
+1. Increment the version number in pyproject.toml
+2. Run the following commands:
+```
+$ python3 -m build
+$ python3 -m twine upload --repository testpypi dist/*
 ```
