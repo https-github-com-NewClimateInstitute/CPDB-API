@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cpdb_api"
-version = "1.0.5"
+version = "1.0.1"
 authors = [
-  { name="Kevin Dackow", email="info@newclimate.org" },
+  { name="NewClimate Institute", email="info@newclimate.org" },
 ]
 description = "An API to access the NewClimate Institute's Climate Policy Database"
 dependencies = [

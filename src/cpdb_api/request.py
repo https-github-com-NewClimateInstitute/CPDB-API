@@ -11,28 +11,25 @@ import Request from ...
 import pandas as pd
 
 # for query to dev server
-request = Request()
-request.set_api_user(...)
-request.set_api_password(...)
-
-# for query to prod server
-# request = Resquest("https://climatepolicydatabase.org/api/v1/climate-policies")
+r = request.Request()
+r.set_api_user(...)
+r.set_api_password(...)
 
 # set filters
-request.set_country("IND")
-request.set_decision_date(2010)
-request.set_policy_status("Planned")
-request.add_sector("Electricity and heat")
-request.add_sector("General")
-request.add_policy_instrument("Direct investment")
-request.add_policy_instrument("Energy efficiency")
-request.add_policy_type("Energy efficiency")
+r.set_country("IND")
+r.set_decision_date(2010)
+r.set_policy_status("Planned")
+r.add_sector("Electricity and heat")
+r.add_sector("General")
+r.add_policy_instrument("Direct investment")
+r.add_policy_instrument("Energy efficiency")
+r.add_policy_type("")
 
 # obtain filtered result as pandas Dataframe
-df = request.issue()
+df = r.issue()
 
 # save the result to CSV file
-request.save_csv("filtered_cpdb.csv")
+r.save_csv("filtered_cpdb.csv")
 ```
 """
 
@@ -42,7 +39,7 @@ import pandas as pd
 import requests
 from requests.auth import HTTPBasicAuth
 
-API_URL = 'http://cpdb-dev.waat.eu/api/v1/climate-policies'
+API_URL = 'https://climatepolicydatabase.org/api/v1/climate-policies'
 
 
 class Request:
@@ -181,7 +178,7 @@ class Request:
         self._response_type
         :return: none
         """
-        if self._data_frame == '':
+        if self._data_frame is None:
           print("No dataframe set, unable to export to CSV")
           return
         self._data_frame.to_csv(path)

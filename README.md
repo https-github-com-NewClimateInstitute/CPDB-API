@@ -32,7 +32,6 @@ r.add_sector("Electricity and heat")
 r.add_sector("General")
 r.add_policy_instrument("Direct investment")
 r.add_policy_instrument("Energy efficiency")
-r.add_policy_type("Energy efficiency")
 
 # Issue the request (this returns a pandas dataframe if you want to parse it programmatically)
 r.issue()
@@ -42,11 +41,12 @@ r.save_csv("filtered_cpdb.csv")
 ```
 
 # Releasing
-To release to the test PyPI, do the following:
+
+To release to PyPi (pip), do the following:
 
 1. Increment the version number in pyproject.toml
 2. Run the following commands:
 ```
 $ python3 -m build
-$ python3 -m twine upload --repository testpypi dist/*
+$ python3 -m twine upload dist/*
 ```
