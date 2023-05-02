@@ -5,12 +5,12 @@ A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB). You can a
 Installation is simple, via pip.
 
 ```
-pip install -i https://test.pypi.org/simple/ cpdb-api
+pip install cpdb-api
 ```
 
-If you need to specify a version, please do something like this:
+If you *need* to specify a version, please do this (we strongly recommend against this unless you know what you're doing):
 ```
-pip install -i https://test.pypi.org/simple/ cpdb-api==<version e.g. 1.0.5>
+pip install cpdb-api==<version e.g. 1.0.5>
 ```
 
 # Usage
@@ -19,10 +19,6 @@ pip install -i https://test.pypi.org/simple/ cpdb-api==<version e.g. 1.0.5>
 from cpdb_api import request 
 
 r = request.Request()
-
-# auth
-r.set_api_user("<username>")
-r.set_api_password("<password>")
 
 # set filters
 r.set_country("IND")
@@ -33,7 +29,7 @@ r.add_sector("General")
 r.add_policy_instrument("Direct investment")
 r.add_policy_instrument("Energy efficiency")
 
-# Issue the request (this returns a pandas dataframe if you want to parse it programmatically)
+# Issue the request (this returns a pandas dataframe, if you want to parse it programmatically)
 r.issue()
 
 # save the result to CSV file
