@@ -10,13 +10,13 @@ pip install cpdb-api
 
 If you *need* to specify a version, please do this (we strongly recommend against this unless you know what you're doing):
 ```
-pip install cpdb_api==<version e.g. 1.0.5>
+pip install cpdb-api==<version e.g. 1.0.5>
 ```
 
 # Usage
 
 ```
-from cpdb-api import request 
+from cpdb_api import request 
 
 r = request.Request()
 
