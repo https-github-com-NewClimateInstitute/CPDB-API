@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cpdb-api"
-version = "1.0.4"
+name = "cpdb_api"
+version = "1.0.5"
 authors = [
   { name="NewClimate Institute", email="info@newclimate.org" },
 ]
