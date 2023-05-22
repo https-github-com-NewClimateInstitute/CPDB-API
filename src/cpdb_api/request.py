@@ -1,37 +1,4 @@
-"""A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB).
-Installation
-
-```
-pip install ...
-```
-
-Example
-```
-import Request from ...
-import pandas as pd
-
-# for query to dev server
-r = request.Request()
-r.set_api_user(...)
-r.set_api_password(...)
-
-# set filters
-r.set_country("IND")
-r.set_decision_date(2010)
-r.set_policy_status("Planned")
-r.add_sector("Electricity and heat")
-r.add_sector("General")
-r.add_policy_instrument("Direct investment")
-r.add_policy_instrument("Energy efficiency")
-r.add_policy_type("")
-
-# obtain filtered result as pandas Dataframe
-df = r.issue()
-
-# save the result to CSV file
-r.save_csv("filtered_cpdb.csv")
-```
-"""
+"""A Python API for NewClimate Institute's ClimatePolicy DataBase (CPDB)."""
 
 import json
 
@@ -62,30 +29,6 @@ class Request:
         self._policy_type = ""
         self._data_frame = ""
         self._properties = dict()
-
-    # Pre-formatted requests
-    def set_request(self, r):
-        """
-        :param r: the request, in proper JSON format per https://github/<path>/<to>/<version>/<controlled>/<schema>
-        :return: none
-        """
-        self._request = r
-
-    def set_api_user(self, u):
-        """
-        Sets the API username for the request.
-        :param u: the username to be used for authenticating to the API
-        :return: none
-        """
-        self._api_user = u
-
-    def set_api_password(self, p):
-        """
-        Sets the API password for the request.
-        :param p: the password to be used for authenticating to the API
-        :return: none
-        """
-        self._api_password = p
 
     def set_country(self, c):
         """
@@ -138,16 +81,16 @@ class Request:
         """
         self._policy_instrument = ",".join(policy_instrument)
 
-    def add_policy_type(self, policy_type):
+    def add_mitigation_area(self, mitigation_area):
         """
-        A list of policy types (mitigation areas) to query. Items must be one of:
+        A list of mitigation areas to query. Items must be one of:
         energy efficiency, energy service demand reduction and resource efficiency, 
         non energy use, other low carbon technologies and fuel switch, renewables, unknown
 
         :param policy_type: a list of policy types to add to the query.
         :return: none
         """
-        self._policy_type = ",".join(policy_type)
+        self._policy_type = ",".join(mitigation_area)
 
     # For request issuing & data retrieval.
     def issue(self):
@@ -207,3 +150,28 @@ class Request:
             properties["policy_type"] = self._policy_type
         self._properties = properties
         return properties
+
+    # Helpers for testing
+    def set_request(self, r):
+        """
+        :param r: the request, in proper JSON format (for testing)
+        :return: none
+        """
+        self._request = r
+
+    def set_api_user(self, u):
+        """
+        Sets the API username for the request.
+        :param u: the username to be used for authenticating to the API
+        :return: none
+        """
+        self._api_user = u
+
+    def set_api_password(self, p):
+        """
+        Sets the API password for the request.
+        :param p: the password to be used for authenticating to the API
+        :return: none
+        """
+        self._api_password = p
+
