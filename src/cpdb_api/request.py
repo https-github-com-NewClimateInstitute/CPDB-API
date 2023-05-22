@@ -26,7 +26,7 @@ class Request:
         self._response = ""
         self._sector = ""
         self._policy_instrument = ""
-        self._policy_type = ""
+        self._mitigation_area = ""
         self._data_frame = ""
         self._properties = dict()
 
@@ -66,7 +66,10 @@ class Request:
         :param sector: a list of sectors to add to the query.
         :return: none
         """
-        self._sector = ",".join(sector)
+        if self._sector == "":
+          self._sector = sector
+        else:
+          self._sector = ",".join([self._sector, sector])
 
     def add_policy_instrument(self, policy_instrument):
         """
@@ -79,7 +82,10 @@ class Request:
         :param policy_instrument: a list of policy instruments to add to the query.
         :return: none
         """
-        self._policy_instrument = ",".join(policy_instrument)
+        if self._policy_instrument == "":
+          self._policy_instrument = policy_instrument
+        else:
+          self._policy_instrument = ",".join([self._policy_instrument, policy_instrument])
 
     def add_mitigation_area(self, mitigation_area):
         """
@@ -87,10 +93,13 @@ class Request:
         energy efficiency, energy service demand reduction and resource efficiency, 
         non energy use, other low carbon technologies and fuel switch, renewables, unknown
 
-        :param policy_type: a list of policy types to add to the query.
+        :param mitigation_area: a list of policy types to add to the query.
         :return: none
         """
-        self._policy_type = ",".join(mitigation_area)
+        if self._mitigation_area == "":
+          self._mitigation_area = mitigation_area
+        else:
+          self._mitigation_area = ",".join([self._mitigation_area, mitigation_area])
 
     # For request issuing & data retrieval.
     def issue(self):
@@ -146,8 +155,8 @@ class Request:
             properties["sector"] = self._sector
         if self._policy_instrument != "":
             properties["policy_instrument"] = self._policy_instrument
-        if self._policy_type != "":
-            properties["policy_type"] = self._policy_type
+        if self._mitigation_area != "":
+            properties["policy_type"] = self._mitigation_area
         self._properties = properties
         return properties
 
